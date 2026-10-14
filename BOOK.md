@@ -495,7 +495,7 @@ The dataset tells a stark story. **7 of 10 suppliers already sit at High overall
 ### 9.2 Lens 1 — Causal Loop Diagram
 
 ```mermaid
-graph LR
+graph TD
     CMcap["Category-Manager<br/>analysis & prep capacity"]
     PrepEffort["Manual prep effort<br/>per supplier"]
     PrepLate["Meeting-prep<br/>lateness / backlog"]
@@ -508,26 +508,26 @@ graph LR
     StaleActions["Stale / overdue<br/>action items"]
     Adoption["AI-agent<br/>automation adoption"]
 
-    AccumRisk -->|+| PPM
-    PPM -->|+| Escalation
-    Escalation -->|-| CMcap
-    CMcap -->|+| Reviewed
-    Reviewed -->|-| AccumRisk
+    AccumRisk -->|#43;| PPM
+    PPM -->|#43;| Escalation
+    Escalation -->|#45;| CMcap
+    CMcap -->|#43;| Reviewed
+    Reviewed -->|#45;| AccumRisk
 
-    PrepEffort -->|+| PrepLate
-    PrepLate -->|-| Reviewed
-    AccumRisk -->|+| PrepEffort
+    PrepEffort -->|#43;| PrepLate
+    PrepLate -->|#45;| Reviewed
+    AccumRisk -->|#43;| PrepEffort
 
-    ActionClose -->|-| StaleActions
-    StaleActions -->|+| AccumRisk
-    AccumRisk -->|-| ActionClose
+    ActionClose -->|#45;| StaleActions
+    StaleActions -->|#43;| AccumRisk
+    AccumRisk -->|#45;| ActionClose
 
-    Reviewed -->|+| RiskVis
-    RiskVis -->|+| ActionClose
+    Reviewed -->|#43;| RiskVis
+    RiskVis -->|#43;| ActionClose
 
-    AccumRisk -->|+| Adoption
-    Adoption -->|-| PrepEffort
-    Adoption -->|+| RiskVis
+    AccumRisk -->|#43;| Adoption
+    Adoption -->|#45;| PrepEffort
+    Adoption -->|#43;| RiskVis
 ```
 
 Three **reinforcing vicious loops** drive the pain:
@@ -650,7 +650,7 @@ Mean `days_to_root_cause` is ≈ **45 days** (range 21–87), and warranty expos
 ### 10.2 Lens 1 — Causal Loop Diagram
 
 ```mermaid
-graph LR
+graph TD
     CB[Complaint Backlog<br/>open FC records]
     CT[Classification Time]
     GT[Investigation Gathering Time<br/>Q2 + Q3 pull]
@@ -667,30 +667,30 @@ graph LR
     WC[Warranty + Compensation Cost]
     NEW[New Complaint Inflow]
 
-    CB -->|+| EW
-    EW -->|+| CT
-    EW -->|+| GT
-    EW -->|+| RD
-    CT -->|-| TP
-    GT -->|-| TP
-    RD -->|-| TP
-    TP -->|-| CB
+    CB -->|#43;| EW
+    EW -->|#43;| CT
+    EW -->|#43;| GT
+    EW -->|#43;| RD
+    CT -->|#45;| TP
+    GT -->|#45;| TP
+    RD -->|#45;| TP
+    TP -->|#45;| CB
 
-    EW -->|-| RCQ
-    RCQ -->|-| CAF
-    CAF -->|+| NEW
-    NEW -->|+| CB
-    CAF -->|+| OM
+    EW -->|#45;| RCQ
+    RCQ -->|#45;| CAF
+    CAF -->|#43;| NEW
+    NEW -->|#43;| CB
+    CAF -->|#43;| OM
 
-    OM -->|+| DRC
-    DRC -->|+| DCL
-    DCL -->|+| REP
-    REP -->|+| CB
+    OM -->|#43;| DRC
+    DRC -->|#43;| DCL
+    DCL -->|#43;| REP
+    REP -->|#43;| CB
 
-    DCL -->|-| CS
-    WC -->|-| CS
-    OM -->|+| WC
-    CS -->|+| TP
+    DCL -->|#45;| CS
+    WC -->|#45;| CS
+    OM -->|#43;| WC
+    CS -->|#43;| TP
 ```
 
 - **R1, Backlog Overload (reinforcing):** more backlog → engineers spread thinner → slower classify/gather/draft → lower throughput → more backlog.
@@ -821,7 +821,7 @@ The dataset averages **~13.5 lines/day**. Its ~353 CDS rows have gaps that are *
 ### 11.2 Lens 1 — Causal Loop Diagram
 
 ```mermaid
-graph LR
+graph TD
     VOL[Daily delivery volume]
     MERGE[Manual two-source merge effort]
     DQ[Data-quality gaps<br/>missing EORI / clustered CDS gaps]
@@ -838,33 +838,33 @@ graph LR
     ADOPT[AI agent adoption]
     AUTO[Automated continuous merge+validate]
 
-    MERGE -->|+| ERR
-    ERR -->|+| REWORK
-    REWORK -->|+| WORKLOAD
-    WORKLOAD -->|+| FATIGUE
-    FATIGUE -->|+| ERR
+    MERGE -->|#43;| ERR
+    ERR -->|#43;| REWORK
+    REWORK -->|#43;| WORKLOAD
+    WORKLOAD -->|#43;| FATIGUE
+    FATIGUE -->|#43;| ERR
 
-    ERR -->|+| REJECT
-    REJECT -->|+| CLRDELAY
-    CLRDELAY -->|+| WORKLOAD
-    WORKLOAD -->|-| TIMELY
-    TIMELY -->|-| REJECT
+    ERR -->|#43;| REJECT
+    REJECT -->|#43;| CLRDELAY
+    CLRDELAY -->|#43;| WORKLOAD
+    WORKLOAD -->|#45;| TIMELY
+    TIMELY -->|#45;| REJECT
 
-    VOL -->|+| MERGE
-    DQ -->|+| CRIT
-    DQ -->|+| ERR
-    CRIT -->|+| REWORK
-    REWORK -->|-| REJECT
+    VOL -->|#43;| MERGE
+    DQ -->|#43;| CRIT
+    DQ -->|#43;| ERR
+    CRIT -->|#43;| REWORK
+    REWORK -->|#45;| REJECT
 
-    CLRDELAY -->|+| TRANSPORT
-    TRANSPORT -->|+| DEMUR
+    CLRDELAY -->|#43;| TRANSPORT
+    TRANSPORT -->|#43;| DEMUR
 
-    WORKLOAD -->|+| ADOPT
-    ADOPT -->|+| AUTO
-    AUTO -->|-| MERGE
-    AUTO -->|-| ERR
-    AUTO -->|+| TIMELY
-    TIMELY -->|+| ADOPT
+    WORKLOAD -->|#43;| ADOPT
+    ADOPT -->|#43;| AUTO
+    AUTO -->|#45;| MERGE
+    AUTO -->|#45;| ERR
+    AUTO -->|#43;| TIMELY
+    TIMELY -->|#43;| ADOPT
 ```
 
 - **R1, the Merge-Error / Fatigue Death Spiral (reinforcing):** manual merge → errors → rework → workload → fatigue → *more* errors. The clustered CDS gaps feed it constantly, because the operator can't tell a "legitimately absent row" from "I missed the join" without manual cross-checking.
@@ -1018,29 +1018,29 @@ Because nameplate capacity is not *effective* capacity. 12.5% of notifications c
 ### 13.2 Lens 1 — Causal Loop Diagram
 
 ```mermaid
-graph LR
-  INFLOW[Notification inflow] -->|+| QUEUE[Open backlog]
-  QUEUE -->|+| WAIT[Avg wait time in queue]
-  WAIT -->|+| AGING[Criticals aging past SLA]
-  AGING -->|+| FAIL[Unplanned failures]
-  FAIL -->|+| DOWNTIME[Downtime cost]
-  FAIL -->|+| REWORK[Emergency re-notifications]
-  REWORK -->|+| INFLOW
+graph TD
+  INFLOW[Notification inflow] -->|#43;| QUEUE[Open backlog]
+  QUEUE -->|#43;| WAIT[Avg wait time in queue]
+  WAIT -->|#43;| AGING[Criticals aging past SLA]
+  AGING -->|#43;| FAIL[Unplanned failures]
+  FAIL -->|#43;| DOWNTIME[Downtime cost]
+  FAIL -->|#43;| REWORK[Emergency re-notifications]
+  REWORK -->|#43;| INFLOW
 
-  QUEUE -->|+| PRESSURE[Planner time pressure]
-  PRESSURE -->|-| QUALITY[Triage quality]
-  QUALITY -->|-| FALSEPOS[False-positive / wrong-severity rate]
-  FALSEPOS -->|+| QUEUE
+  QUEUE -->|#43;| PRESSURE[Planner time pressure]
+  PRESSURE -->|#45;| QUALITY[Triage quality]
+  QUALITY -->|#45;| FALSEPOS[False-positive / wrong-severity rate]
+  FALSEPOS -->|#43;| QUEUE
 
-  PRESSURE -->|+| SHORTCUT[Shallow context-gathering]
-  SHORTCUT -->|+| MISSCRIT[Missed criticals]
-  MISSCRIT -->|+| FAIL
+  PRESSURE -->|#43;| SHORTCUT[Shallow context-gathering]
+  SHORTCUT -->|#43;| MISSCRIT[Missed criticals]
+  MISSCRIT -->|#43;| FAIL
 
-  QUEUE -->|+| PROC[Processing rate]
-  PROC -->|-| QUEUE
+  QUEUE -->|#43;| PROC[Processing rate]
+  PROC -->|#45;| QUEUE
 
-  AGING -->|+| ESCALATE[Manual escalations]
-  ESCALATE -->|-| QUEUE
+  AGING -->|#43;| ESCALATE[Manual escalations]
+  ESCALATE -->|#45;| QUEUE
 ```
 
 - **R1, the rework spiral (reinforcing).** `INFLOW → + QUEUE → + WAIT → + AGING → + FAIL → + REWORK → + INFLOW`. Zero minus signs, so the loop is reinforcing. Every critical that ages into a failure generates *new* emergency notifications, which lengthen the very queue that caused the failure. This is the dominant vicious loop.
@@ -1061,7 +1061,7 @@ graph LR
 ### 13.3 Lens 2 — Stock & Flow
 
 ```mermaid
-graph LR
+graph TD
   SRC((Sources)) -->|raise rate ~154/wk| OPEN[Open notifications ~1,085]
   OPEN -->|triage rate| REVIEW[In-review 781]
   REVIEW -->|convert rate| WO[Open work orders]
@@ -1282,7 +1282,7 @@ A second shock lands in **April 2025**: a rare-earth / neodymium-magnet price sp
 A monthly table tells you *what* changed. It doesn't tell you *why the change fed on itself.* Meridian's crisis was not a one-time hit that the system absorbed. It was a **vicious circle** that a tariff shock set in motion and that then ran under its own power.
 
 ```mermaid
-graph LR
+graph TD
   TAR[Sep-2024 tariff shock]
   COST[Material cost pressure]
   CASH[Meridian cash-flow stress]
@@ -1294,18 +1294,18 @@ graph LR
   MARGIN[Throughput margin]
   CLAR[Clarification rounds / admin burden]
 
-  TAR -->|+| COST
-  COST -->|+| CASH
-  CASH -->|+| LATE
-  LATE -->|-| HEALTH
-  HEALTH -->|+| RESP
-  RESP -->|+| POOL
-  POOL -->|-| PRICE
-  PRICE -->|+| COST
-  POOL -->|+| MARGIN
-  MARGIN -->|-| CASH
-  HEALTH -->|-| CLAR
-  CLAR -->|-| RESP
+  TAR -->|#43;| COST
+  COST -->|#43;| CASH
+  CASH -->|#43;| LATE
+  LATE -->|#45;| HEALTH
+  HEALTH -->|#43;| RESP
+  RESP -->|#43;| POOL
+  POOL -->|#45;| PRICE
+  PRICE -->|#43;| COST
+  POOL -->|#43;| MARGIN
+  MARGIN -->|#45;| CASH
+  HEALTH -->|#45;| CLAR
+  CLAR -->|#45;| RESP
 ```
 
 - **R1, the margin death spiral (the dominant loop).** `CASH → + LATE → − HEALTH → + RESP → + POOL → + MARGIN → − CASH`. Two minus signs, so it is **reinforcing**. Cash stress makes Meridian pay late. Late payment erodes vendor health. Unhealthy vendors stop bidding. A thin pool loses price competition, margin falls, and falling margin *deepens* cash stress. This loop turned a one-month tariff into a ten-month decline. Data signature: bids/RFQ **6.40 → 4.50 (−30%)**, T-margin **20.0% → 16.4%**.
@@ -1329,9 +1329,9 @@ graph LR
 ### 15.3 Lens 2 — Stock & Flow
 
 ```mermaid
-flowchart LR
+flowchart TB
   subgraph FLOWS
-    direction LR
+    direction TB
     pay_late((pay late)) -->|fills| STRESS
     heal((relationship repair)) -->|fills| HQ
     decay((health decay)) -->|drains| HQ
@@ -1582,23 +1582,23 @@ The repo's Hermes skill reframes the problem as: *which open orders will be late
 ### 17.2 Lens 1 — Causal Loop Diagram
 
 ```mermaid
-graph LR
-  DIS[Disruptions at destination] -->|+| LATE[Orders silently delayed]
-  LATE -->|+| COMPL[Customer complaints]
-  COMPL -->|+| TICK[Support tickets / angry calls]
-  TICK -->|+| COMP[Goodwill compensation paid]
-  COMP -->|-| MARGIN[Net margin]
-  COMPL -->|-| TRUST[Customer trust / repeat rate]
-  TRUST -->|+| REV[Repeat revenue]
+graph TD
+  DIS[Disruptions at destination] -->|#43;| LATE[Orders silently delayed]
+  LATE -->|#43;| COMPL[Customer complaints]
+  COMPL -->|#43;| TICK[Support tickets / angry calls]
+  TICK -->|#43;| COMP[Goodwill compensation paid]
+  COMP -->|#45;| MARGIN[Net margin]
+  COMPL -->|#45;| TRUST[Customer trust / repeat rate]
+  TRUST -->|#43;| REV[Repeat revenue]
 
-  LATE -->|+| REACT[Reactive firefighting load]
-  REACT -->|-| PROAC[Capacity to look ahead]
-  PROAC -->|-| LATE
+  LATE -->|#43;| REACT[Reactive firefighting load]
+  REACT -->|#45;| PROAC[Capacity to look ahead]
+  PROAC -->|#45;| LATE
 
-  DETECT[Early disruption detection] -->|-| LATE
-  DETECT -->|+| PROACTIVE[Proactive heads-up email]
-  PROACTIVE -->|+| TRUST
-  PROACTIVE -->|-| COMPL
+  DETECT[Early disruption detection] -->|#45;| LATE
+  DETECT -->|#43;| PROACTIVE[Proactive heads-up email]
+  PROACTIVE -->|#43;| TRUST
+  PROACTIVE -->|#45;| COMPL
 ```
 
 - **R1, the firefighting spiral (reinforcing).** `Orders silently delayed → + Reactive firefighting load → − Capacity to look ahead → − Orders silently delayed`. Two minus signs, so reinforcing. The busier the team gets cleaning up late deliveries, the less time it has to *anticipate* them, so more go undetected. This is the vicious engine, and it is the only loop that closes in the diagram.
@@ -1748,19 +1748,19 @@ LoopCycle's support runs across six channels (Phone, WhatsApp, Email, Web form, 
 ### 18.2 Lens 1 — Causal Loop Diagram
 
 ```mermaid
-graph LR
-  INFLOW[Incoming tickets] -->|+| QUEUE[Open ticket backlog]
-  QUEUE -->|+| WAIT[First-response wait time]
-  WAIT -->|+| BREACH[SLA breaches]
-  BREACH -->|+| COMP[Compensation + escalations]
-  WAIT -->|+| FOLLOWUP[Chase-up messages / repeat calls]
-  FOLLOWUP -->|+| INFLOW
-  QUEUE -->|+| RUSH[Agents rush triage]
-  RUSH -->|+| MISROUTE[Mis-categorise / mis-route]
-  MISROUTE -->|+| REOPEN[Reopens]
-  REOPEN -->|+| QUEUE
-  TRIAGE[Fast consistent triage] -->|-| WAIT
-  TRIAGE -->|-| MISROUTE
+graph TD
+  INFLOW[Incoming tickets] -->|#43;| QUEUE[Open ticket backlog]
+  QUEUE -->|#43;| WAIT[First-response wait time]
+  WAIT -->|#43;| BREACH[SLA breaches]
+  BREACH -->|#43;| COMP[Compensation + escalations]
+  WAIT -->|#43;| FOLLOWUP[Chase-up messages / repeat calls]
+  FOLLOWUP -->|#43;| INFLOW
+  QUEUE -->|#43;| RUSH[Agents rush triage]
+  RUSH -->|#43;| MISROUTE[Mis-categorise / mis-route]
+  MISROUTE -->|#43;| REOPEN[Reopens]
+  REOPEN -->|#43;| QUEUE
+  TRIAGE[Fast consistent triage] -->|#45;| WAIT
+  TRIAGE -->|#45;| MISROUTE
 ```
 
 - **R1, the chase-up flood (reinforcing).** `Backlog → Wait → Chase-ups → Incoming → Backlog`. Slow first response *manufactures its own inbound volume*. The 26 calls and 155 messages against only 37 tickets show this multiplication.
@@ -1908,18 +1908,18 @@ There are two parallel leaks. On the Shopify storefront, **1,326 checkouts** wer
 ### 19.2 Lens 1 — Causal Loop Diagram
 
 ```mermaid
-graph LR
-  TRAFFIC[Sessions / inquiries] -->|+| CART[Carts & quotes started]
-  CART -->|+| FRICTION[Checkout friction: shipping surprise, payment fail, slow reply]
-  FRICTION -->|+| ABANDON[Abandoned carts/convos]
-  ABANDON -->|+| RECAP[Recovery touch: email/WhatsApp]
-  RECAP -->|-| ABANDON
-  ABANDON -->|+| LOSTREV[Lost revenue]
-  FRICTION -->|-| TRUST2[Buyer confidence]
-  TRUST2 -->|+| CART
-  SLOW[Agent reply backlog] -->|+| FRICTION
-  ABANDON -->|+| SLOW
-  FIXFRICTION[Remove structural friction] -->|-| FRICTION
+graph TD
+  TRAFFIC[Sessions / inquiries] -->|#43;| CART[Carts & quotes started]
+  CART -->|#43;| FRICTION[Checkout friction: shipping surprise, payment fail, slow reply]
+  FRICTION -->|#43;| ABANDON[Abandoned carts/convos]
+  ABANDON -->|#43;| RECAP[Recovery touch: email/WhatsApp]
+  RECAP -->|#45;| ABANDON
+  ABANDON -->|#43;| LOSTREV[Lost revenue]
+  FRICTION -->|#45;| TRUST2[Buyer confidence]
+  TRUST2 -->|#43;| CART
+  SLOW[Agent reply backlog] -->|#43;| FRICTION
+  ABANDON -->|#43;| SLOW
+  FIXFRICTION[Remove structural friction] -->|#45;| FRICTION
 ```
 
 - **R1, friction → abandon → backlog (reinforcing).** `Abandoned convos → + reply backlog → + friction → + abandon`. On social, every un-replied inquiry worsens the backlog that causes the next slow reply. slow_agent_reply (189) is this loop made visible.
@@ -2059,19 +2059,19 @@ Instagram is LoopCycle's demand engine. 606 orders are attributed to Instagram D
 ### 20.2 Lens 1 — Causal Loop Diagram
 
 ```mermaid
-graph LR
-  POST[Posts published] -->|+| REACH[Reach / engagement]
-  REACH -->|+| INQUIRY[DMs & site sessions]
-  INQUIRY -->|+| ORDERS[Attributed orders]
-  ORDERS -->|+| REV2[Revenue]
-  REV2 -->|+| BUDGET[Content budget / confidence]
-  BUDGET -->|+| POST
-  ORDERS -->|+| LEARN[What converted is known]
-  LEARN -->|+| BETTER[Better next-post choice]
-  BETTER -->|+| REACH
-  POST -->|+| FATIGUE[Audience fatigue / sameness]
-  FATIGUE -->|-| REACH
-  GUESS[Plan by feel, weak attribution] -->|-| LEARN
+graph TD
+  POST[Posts published] -->|#43;| REACH[Reach / engagement]
+  REACH -->|#43;| INQUIRY[DMs & site sessions]
+  INQUIRY -->|#43;| ORDERS[Attributed orders]
+  ORDERS -->|#43;| REV2[Revenue]
+  REV2 -->|#43;| BUDGET[Content budget / confidence]
+  BUDGET -->|#43;| POST
+  ORDERS -->|#43;| LEARN[What converted is known]
+  LEARN -->|#43;| BETTER[Better next-post choice]
+  BETTER -->|#43;| REACH
+  POST -->|#43;| FATIGUE[Audience fatigue / sameness]
+  FATIGUE -->|#45;| REACH
+  GUESS[Plan by feel, weak attribution] -->|#45;| LEARN
 ```
 
 - **R1, the virtuous content flywheel (reinforcing).** `Posts → Reach → Inquiries → Orders → Revenue → Budget → Posts`. When content works, it funds more content. The batik_reel is this loop firing.
@@ -2286,7 +2286,7 @@ All nine cases were shipped or pitched as "AI agents". In **five of nine**, a te
 Strip the domain away and five cases converge on the same three-layer shape:
 
 ```mermaid
-graph LR
+graph TD
   IN[High-volume inflow<br/>complaints · notifications · emails · tickets · findings] --> S1{System 1<br/>decision model<br/>calibrated, ~ms}
   S1 -->|confident + routine| AUTO[Automation<br/>route · reject · rank]
   S1 -->|abstain / low confidence| HUMAN[Human review]

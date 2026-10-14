@@ -47,8 +47,25 @@
       flowchart: { htmlLabels: true, useMaxWidth: true, curve: "basis" },
       fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif"
     });
-    window.mermaid.run({ nodes: diagrams }).catch(function (e) { console.error(e); });
+    window.mermaid.run({ nodes: diagrams }).then(fitDiagrams).catch(function (e) { console.error(e); });
   }
+  // Never shrink a diagram below MIN_SCALE of its natural size: past that the labels are
+  // unreadable, so show it larger and let its frame scroll sideways instead.
+  var MIN_SCALE = 0.7;
+  function fitDiagrams() {
+    diagrams.forEach(function (el) {
+      var svg = el.querySelector("svg"), frame = el.closest(".diagram");
+      if (!svg || !frame || !svg.viewBox || !svg.viewBox.baseVal) return;
+      var natural = svg.viewBox.baseVal.width;
+      var room = frame.clientWidth - 32;
+      var tooSmall = natural * MIN_SCALE > room;
+      svg.style.maxWidth = tooSmall ? "none" : natural + "px";
+      svg.style.width = tooSmall ? Math.round(natural * MIN_SCALE) + "px" : "100%";
+      frame.classList.toggle("scrolls", tooSmall);
+    });
+  }
+  var resizeTimer;
+  window.addEventListener("resize", function () { clearTimeout(resizeTimer); resizeTimer = setTimeout(fitDiagrams, 150); });
   document.addEventListener("DOMContentLoaded", renderDiagrams);
   if (window.matchMedia) {
     var mq = window.matchMedia("(prefers-color-scheme: dark)");

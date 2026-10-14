@@ -127,7 +127,9 @@ a:hover { text-decoration-thickness: 2px; }
 .prose h2 { font-size: clamp(25px, 3.4vw, 31px); margin: 0 0 .6em; }
 .prose h3 { font-size: 21px; margin: 2.1em 0 .6em; padding-top: .6em; border-top: 1px solid var(--rule); }
 .prose h4 { font-size: 17px; margin: 1.8em 0 .5em; }
-.prose h2 + h3, .prose .part-banner + h2 + h3 { border-top: 0; }
+.prose h2 + h3, .prose .part-banner + h2 + h3, .prose hr + h3 { border-top: 0; }
+.prose hr + h3 { margin-top: 0; padding-top: 0; }
+.prose hr + hr, .prose hr:last-child { display: none; }
 .prose p, .prose li { color: var(--ink); }
 .prose ul, .prose ol { padding-left: 1.4em; }
 .prose li { margin: .3em 0; }
@@ -158,7 +160,13 @@ a:hover { text-decoration-thickness: 2px; }
 .diagram { margin: 1.5em 0; padding: 16px; background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; overflow-x: auto; }
 .diagram pre.mermaid { background: none; border: 0; margin: 0; padding: 0; text-align: center; font-family: var(--sans); white-space: pre; }
 .diagram pre.mermaid:not([data-processed]) { color: transparent; min-height: 120px; }
-.diagram svg { max-width: 100%; height: auto; }
+.diagram svg { max-width: 100%; height: auto; display: block; margin: 0 auto; }
+.diagram.scrolls { position: relative; }
+.diagram.scrolls svg { margin: 0; }
+.diagram.scrolls::before {
+  content: "scroll →"; position: sticky; left: 0; display: block; margin: -6px 0 6px;
+  font: 600 11px var(--sans); letter-spacing: .06em; text-transform: uppercase; color: var(--muted);
+}
 
 /* ---------- part banner ---------- */
 .part-banner {

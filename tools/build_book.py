@@ -25,7 +25,10 @@ OUT = ROOT / "BOOK.md"
 FENCE = re.compile(r"^\s*```")
 HEADING = re.compile(r"^(#{1,6})\s+(.*?)\s*#*\s*$")
 LINK = re.compile(r"\]\(#([^)\s]+)\)")
-EDGE = re.compile(r"^\s*(\w+)(?:[\[\(\{][^\]\)\}]*[\]\)\}]+)?\s*-->\|\s*([+-])\s*\|\s*(\w+)", re.M)
+# Signed CLD edges. Signs are written as Mermaid entity codes (#43; = +, #45; = -) because
+# Mermaid 11 parses a bare "+" or "-" label as a Markdown list ("Unsupported markdown: list").
+EDGE = re.compile(r"^\s*(\w+)(?:[\[\(\{][^\]\)\}]*[\]\)\}]+)?\s*-->\|\s*(\+|-|#43;|#45;)\s*\|\s*(\w+)", re.M)
+SIGN = {"+": "+", "-": "-", "#43;": "+", "#45;": "-"}
 
 
 def slugify(text: str) -> str:
@@ -85,7 +88,7 @@ def loop_report(text: str) -> list[str]:
             continue
         adj = {}
         for a, sign, b in edges:
-            adj.setdefault(a, []).append((b, sign))
+            adj.setdefault(a, []).append((b, SIGN[sign]))
         nodes = sorted({a for a, _, _ in edges} | {b for _, _, b in edges})
         rank = {v: k for k, v in enumerate(nodes)}
         cycles = []

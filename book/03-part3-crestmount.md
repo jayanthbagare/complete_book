@@ -49,29 +49,29 @@ Because nameplate capacity is not *effective* capacity. 12.5% of notifications c
 ### 13.2 Lens 1 — Causal Loop Diagram
 
 ```mermaid
-graph LR
-  INFLOW[Notification inflow] -->|+| QUEUE[Open backlog]
-  QUEUE -->|+| WAIT[Avg wait time in queue]
-  WAIT -->|+| AGING[Criticals aging past SLA]
-  AGING -->|+| FAIL[Unplanned failures]
-  FAIL -->|+| DOWNTIME[Downtime cost]
-  FAIL -->|+| REWORK[Emergency re-notifications]
-  REWORK -->|+| INFLOW
+graph TD
+  INFLOW[Notification inflow] -->|#43;| QUEUE[Open backlog]
+  QUEUE -->|#43;| WAIT[Avg wait time in queue]
+  WAIT -->|#43;| AGING[Criticals aging past SLA]
+  AGING -->|#43;| FAIL[Unplanned failures]
+  FAIL -->|#43;| DOWNTIME[Downtime cost]
+  FAIL -->|#43;| REWORK[Emergency re-notifications]
+  REWORK -->|#43;| INFLOW
 
-  QUEUE -->|+| PRESSURE[Planner time pressure]
-  PRESSURE -->|-| QUALITY[Triage quality]
-  QUALITY -->|-| FALSEPOS[False-positive / wrong-severity rate]
-  FALSEPOS -->|+| QUEUE
+  QUEUE -->|#43;| PRESSURE[Planner time pressure]
+  PRESSURE -->|#45;| QUALITY[Triage quality]
+  QUALITY -->|#45;| FALSEPOS[False-positive / wrong-severity rate]
+  FALSEPOS -->|#43;| QUEUE
 
-  PRESSURE -->|+| SHORTCUT[Shallow context-gathering]
-  SHORTCUT -->|+| MISSCRIT[Missed criticals]
-  MISSCRIT -->|+| FAIL
+  PRESSURE -->|#43;| SHORTCUT[Shallow context-gathering]
+  SHORTCUT -->|#43;| MISSCRIT[Missed criticals]
+  MISSCRIT -->|#43;| FAIL
 
-  QUEUE -->|+| PROC[Processing rate]
-  PROC -->|-| QUEUE
+  QUEUE -->|#43;| PROC[Processing rate]
+  PROC -->|#45;| QUEUE
 
-  AGING -->|+| ESCALATE[Manual escalations]
-  ESCALATE -->|-| QUEUE
+  AGING -->|#43;| ESCALATE[Manual escalations]
+  ESCALATE -->|#45;| QUEUE
 ```
 
 - **R1, the rework spiral (reinforcing).** `INFLOW → + QUEUE → + WAIT → + AGING → + FAIL → + REWORK → + INFLOW`. Zero minus signs, so the loop is reinforcing. Every critical that ages into a failure generates *new* emergency notifications, which lengthen the very queue that caused the failure. This is the dominant vicious loop.
@@ -92,7 +92,7 @@ graph LR
 ### 13.3 Lens 2 — Stock & Flow
 
 ```mermaid
-graph LR
+graph TD
   SRC((Sources)) -->|raise rate ~154/wk| OPEN[Open notifications ~1,085]
   OPEN -->|triage rate| REVIEW[In-review 781]
   REVIEW -->|convert rate| WO[Open work orders]

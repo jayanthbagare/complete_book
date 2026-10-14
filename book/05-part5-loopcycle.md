@@ -37,23 +37,23 @@ The repo's Hermes skill reframes the problem as: *which open orders will be late
 ### 17.2 Lens 1 — Causal Loop Diagram
 
 ```mermaid
-graph LR
-  DIS[Disruptions at destination] -->|+| LATE[Orders silently delayed]
-  LATE -->|+| COMPL[Customer complaints]
-  COMPL -->|+| TICK[Support tickets / angry calls]
-  TICK -->|+| COMP[Goodwill compensation paid]
-  COMP -->|-| MARGIN[Net margin]
-  COMPL -->|-| TRUST[Customer trust / repeat rate]
-  TRUST -->|+| REV[Repeat revenue]
+graph TD
+  DIS[Disruptions at destination] -->|#43;| LATE[Orders silently delayed]
+  LATE -->|#43;| COMPL[Customer complaints]
+  COMPL -->|#43;| TICK[Support tickets / angry calls]
+  TICK -->|#43;| COMP[Goodwill compensation paid]
+  COMP -->|#45;| MARGIN[Net margin]
+  COMPL -->|#45;| TRUST[Customer trust / repeat rate]
+  TRUST -->|#43;| REV[Repeat revenue]
 
-  LATE -->|+| REACT[Reactive firefighting load]
-  REACT -->|-| PROAC[Capacity to look ahead]
-  PROAC -->|-| LATE
+  LATE -->|#43;| REACT[Reactive firefighting load]
+  REACT -->|#45;| PROAC[Capacity to look ahead]
+  PROAC -->|#45;| LATE
 
-  DETECT[Early disruption detection] -->|-| LATE
-  DETECT -->|+| PROACTIVE[Proactive heads-up email]
-  PROACTIVE -->|+| TRUST
-  PROACTIVE -->|-| COMPL
+  DETECT[Early disruption detection] -->|#45;| LATE
+  DETECT -->|#43;| PROACTIVE[Proactive heads-up email]
+  PROACTIVE -->|#43;| TRUST
+  PROACTIVE -->|#45;| COMPL
 ```
 
 - **R1, the firefighting spiral (reinforcing).** `Orders silently delayed → + Reactive firefighting load → − Capacity to look ahead → − Orders silently delayed`. Two minus signs, so reinforcing. The busier the team gets cleaning up late deliveries, the less time it has to *anticipate* them, so more go undetected. This is the vicious engine, and it is the only loop that closes in the diagram.
@@ -203,19 +203,19 @@ LoopCycle's support runs across six channels (Phone, WhatsApp, Email, Web form, 
 ### 18.2 Lens 1 — Causal Loop Diagram
 
 ```mermaid
-graph LR
-  INFLOW[Incoming tickets] -->|+| QUEUE[Open ticket backlog]
-  QUEUE -->|+| WAIT[First-response wait time]
-  WAIT -->|+| BREACH[SLA breaches]
-  BREACH -->|+| COMP[Compensation + escalations]
-  WAIT -->|+| FOLLOWUP[Chase-up messages / repeat calls]
-  FOLLOWUP -->|+| INFLOW
-  QUEUE -->|+| RUSH[Agents rush triage]
-  RUSH -->|+| MISROUTE[Mis-categorise / mis-route]
-  MISROUTE -->|+| REOPEN[Reopens]
-  REOPEN -->|+| QUEUE
-  TRIAGE[Fast consistent triage] -->|-| WAIT
-  TRIAGE -->|-| MISROUTE
+graph TD
+  INFLOW[Incoming tickets] -->|#43;| QUEUE[Open ticket backlog]
+  QUEUE -->|#43;| WAIT[First-response wait time]
+  WAIT -->|#43;| BREACH[SLA breaches]
+  BREACH -->|#43;| COMP[Compensation + escalations]
+  WAIT -->|#43;| FOLLOWUP[Chase-up messages / repeat calls]
+  FOLLOWUP -->|#43;| INFLOW
+  QUEUE -->|#43;| RUSH[Agents rush triage]
+  RUSH -->|#43;| MISROUTE[Mis-categorise / mis-route]
+  MISROUTE -->|#43;| REOPEN[Reopens]
+  REOPEN -->|#43;| QUEUE
+  TRIAGE[Fast consistent triage] -->|#45;| WAIT
+  TRIAGE -->|#45;| MISROUTE
 ```
 
 - **R1, the chase-up flood (reinforcing).** `Backlog → Wait → Chase-ups → Incoming → Backlog`. Slow first response *manufactures its own inbound volume*. The 26 calls and 155 messages against only 37 tickets show this multiplication.
@@ -363,18 +363,18 @@ There are two parallel leaks. On the Shopify storefront, **1,326 checkouts** wer
 ### 19.2 Lens 1 — Causal Loop Diagram
 
 ```mermaid
-graph LR
-  TRAFFIC[Sessions / inquiries] -->|+| CART[Carts & quotes started]
-  CART -->|+| FRICTION[Checkout friction: shipping surprise, payment fail, slow reply]
-  FRICTION -->|+| ABANDON[Abandoned carts/convos]
-  ABANDON -->|+| RECAP[Recovery touch: email/WhatsApp]
-  RECAP -->|-| ABANDON
-  ABANDON -->|+| LOSTREV[Lost revenue]
-  FRICTION -->|-| TRUST2[Buyer confidence]
-  TRUST2 -->|+| CART
-  SLOW[Agent reply backlog] -->|+| FRICTION
-  ABANDON -->|+| SLOW
-  FIXFRICTION[Remove structural friction] -->|-| FRICTION
+graph TD
+  TRAFFIC[Sessions / inquiries] -->|#43;| CART[Carts & quotes started]
+  CART -->|#43;| FRICTION[Checkout friction: shipping surprise, payment fail, slow reply]
+  FRICTION -->|#43;| ABANDON[Abandoned carts/convos]
+  ABANDON -->|#43;| RECAP[Recovery touch: email/WhatsApp]
+  RECAP -->|#45;| ABANDON
+  ABANDON -->|#43;| LOSTREV[Lost revenue]
+  FRICTION -->|#45;| TRUST2[Buyer confidence]
+  TRUST2 -->|#43;| CART
+  SLOW[Agent reply backlog] -->|#43;| FRICTION
+  ABANDON -->|#43;| SLOW
+  FIXFRICTION[Remove structural friction] -->|#45;| FRICTION
 ```
 
 - **R1, friction → abandon → backlog (reinforcing).** `Abandoned convos → + reply backlog → + friction → + abandon`. On social, every un-replied inquiry worsens the backlog that causes the next slow reply. slow_agent_reply (189) is this loop made visible.
@@ -514,19 +514,19 @@ Instagram is LoopCycle's demand engine. 606 orders are attributed to Instagram D
 ### 20.2 Lens 1 — Causal Loop Diagram
 
 ```mermaid
-graph LR
-  POST[Posts published] -->|+| REACH[Reach / engagement]
-  REACH -->|+| INQUIRY[DMs & site sessions]
-  INQUIRY -->|+| ORDERS[Attributed orders]
-  ORDERS -->|+| REV2[Revenue]
-  REV2 -->|+| BUDGET[Content budget / confidence]
-  BUDGET -->|+| POST
-  ORDERS -->|+| LEARN[What converted is known]
-  LEARN -->|+| BETTER[Better next-post choice]
-  BETTER -->|+| REACH
-  POST -->|+| FATIGUE[Audience fatigue / sameness]
-  FATIGUE -->|-| REACH
-  GUESS[Plan by feel, weak attribution] -->|-| LEARN
+graph TD
+  POST[Posts published] -->|#43;| REACH[Reach / engagement]
+  REACH -->|#43;| INQUIRY[DMs & site sessions]
+  INQUIRY -->|#43;| ORDERS[Attributed orders]
+  ORDERS -->|#43;| REV2[Revenue]
+  REV2 -->|#43;| BUDGET[Content budget / confidence]
+  BUDGET -->|#43;| POST
+  ORDERS -->|#43;| LEARN[What converted is known]
+  LEARN -->|#43;| BETTER[Better next-post choice]
+  BETTER -->|#43;| REACH
+  POST -->|#43;| FATIGUE[Audience fatigue / sameness]
+  FATIGUE -->|#45;| REACH
+  GUESS[Plan by feel, weak attribution] -->|#45;| LEARN
 ```
 
 - **R1, the virtuous content flywheel (reinforcing).** `Posts → Reach → Inquiries → Orders → Revenue → Budget → Posts`. When content works, it funds more content. The batik_reel is this loop firing.

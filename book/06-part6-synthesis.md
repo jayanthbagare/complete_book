@@ -96,7 +96,7 @@ All nine cases were shipped or pitched as "AI agents". In **five of nine**, a te
 Strip the domain away and five cases converge on the same three-layer shape:
 
 ```mermaid
-graph LR
+graph TD
   IN[High-volume inflow<br/>complaints · notifications · emails · tickets · findings] --> S1{System 1<br/>decision model<br/>calibrated, ~ms}
   S1 -->|confident + routine| AUTO[Automation<br/>route · reject · rank]
   S1 -->|abstain / low confidence| HUMAN[Human review]

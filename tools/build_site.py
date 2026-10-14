@@ -119,11 +119,12 @@ def plain(html_text: str) -> str:
 
 def nav_html(pages, current: str) -> str:
     out = [f'<a class="nav-home{" active" if current == "index.html" else ""}" href="index.html">Title page &amp; contents</a>']
-    part = object()
+    part, opened = None, False
     for p in pages:
-        if p["part"] != part:
-            if part is not object():
+        if not opened or p["part"] != part:
+            if opened:
                 out.append("</ol></div>")
+            opened = True
             part = p["part"]
             name = (part or "").split(" — ")
             head = f'<span class="nav-part-num">{html.escape(name[0])}</span>'
@@ -243,11 +244,12 @@ def main() -> int:
     front_md = re.sub(r"## Table of Contents\n.*?\n---\n", "", front, count=1, flags=re.S)
     front_body, _ = render(front_md, heading_slugs(front_md), where)
     contents = ['<section class="contents-grid" aria-label="Contents">']
-    part = object()
+    part, opened = None, False
     for p in pages:
-        if p["part"] != part:
-            if part is not object():
+        if not opened or p["part"] != part:
+            if opened:
                 contents.append("</ol></div>")
+            opened = True
             part = p["part"]
             contents.append(f'<div class="contents-part"><h3>{html.escape(part or "")}</h3><ol>')
         contents.append(f'<li><a href="{p["file"]}"><span class="nav-num">{p["label"].split()[-1]}</span>'
@@ -302,6 +304,15 @@ def main() -> int:
                body='<h1>Page not found</h1><p>That page is not part of the book. <a href="index.html">Back to the contents</a>.</p>',
                nav=nav_html(pages, ""))
 
+    # Sanity: block tags balance on every page (a stray close tag breaks the layout grid).
+    unbalanced = []
+    for f in OUT.glob("*.html"):
+        h = re.sub(r"<pre.*?</pre>", "", f.read_text(encoding="utf-8"), flags=re.S)
+        for tag in ("div", "ol", "ul", "nav", "aside", "main", "article", "header", "table"):
+            opens, closes = len(re.findall(rf"<{tag}[\s>]", h)), h.count(f"</{tag}>")
+            if opens != closes:
+                unbalanced.append(f"{f.name}: <{tag}> opened {opens}, closed {closes}")
+
     # Sanity: every internal link in the generated site resolves.
     ids = {}
     for f in OUT.glob("*.html"):
@@ -313,9 +324,9 @@ def main() -> int:
             if anchor not in ids.get(page, set()):
                 broken.append(f"{f.name} → {page}#{anchor}")
     print(f"wrote {OUT.relative_to(ROOT)}/: {len(pages) + 2} pages, {len(index_entries)} search entries")
-    for b in broken:
+    for b in broken + unbalanced:
         print("BROKEN", b, file=sys.stderr)
-    return 1 if broken else 0
+    return 1 if broken or unbalanced else 0
 
 
 if __name__ == "__main__":

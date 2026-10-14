@@ -61,7 +61,7 @@ The dataset tells a stark story. **7 of 10 suppliers already sit at High overall
 ### 9.2 Lens 1 — Causal Loop Diagram
 
 ```mermaid
-graph LR
+graph TD
     CMcap["Category-Manager<br/>analysis & prep capacity"]
     PrepEffort["Manual prep effort<br/>per supplier"]
     PrepLate["Meeting-prep<br/>lateness / backlog"]
@@ -74,26 +74,26 @@ graph LR
     StaleActions["Stale / overdue<br/>action items"]
     Adoption["AI-agent<br/>automation adoption"]
 
-    AccumRisk -->|+| PPM
-    PPM -->|+| Escalation
-    Escalation -->|-| CMcap
-    CMcap -->|+| Reviewed
-    Reviewed -->|-| AccumRisk
+    AccumRisk -->|#43;| PPM
+    PPM -->|#43;| Escalation
+    Escalation -->|#45;| CMcap
+    CMcap -->|#43;| Reviewed
+    Reviewed -->|#45;| AccumRisk
 
-    PrepEffort -->|+| PrepLate
-    PrepLate -->|-| Reviewed
-    AccumRisk -->|+| PrepEffort
+    PrepEffort -->|#43;| PrepLate
+    PrepLate -->|#45;| Reviewed
+    AccumRisk -->|#43;| PrepEffort
 
-    ActionClose -->|-| StaleActions
-    StaleActions -->|+| AccumRisk
-    AccumRisk -->|-| ActionClose
+    ActionClose -->|#45;| StaleActions
+    StaleActions -->|#43;| AccumRisk
+    AccumRisk -->|#45;| ActionClose
 
-    Reviewed -->|+| RiskVis
-    RiskVis -->|+| ActionClose
+    Reviewed -->|#43;| RiskVis
+    RiskVis -->|#43;| ActionClose
 
-    AccumRisk -->|+| Adoption
-    Adoption -->|-| PrepEffort
-    Adoption -->|+| RiskVis
+    AccumRisk -->|#43;| Adoption
+    Adoption -->|#45;| PrepEffort
+    Adoption -->|#43;| RiskVis
 ```
 
 Three **reinforcing vicious loops** drive the pain:
@@ -216,7 +216,7 @@ Mean `days_to_root_cause` is ≈ **45 days** (range 21–87), and warranty expos
 ### 10.2 Lens 1 — Causal Loop Diagram
 
 ```mermaid
-graph LR
+graph TD
     CB[Complaint Backlog<br/>open FC records]
     CT[Classification Time]
     GT[Investigation Gathering Time<br/>Q2 + Q3 pull]
@@ -233,30 +233,30 @@ graph LR
     WC[Warranty + Compensation Cost]
     NEW[New Complaint Inflow]
 
-    CB -->|+| EW
-    EW -->|+| CT
-    EW -->|+| GT
-    EW -->|+| RD
-    CT -->|-| TP
-    GT -->|-| TP
-    RD -->|-| TP
-    TP -->|-| CB
+    CB -->|#43;| EW
+    EW -->|#43;| CT
+    EW -->|#43;| GT
+    EW -->|#43;| RD
+    CT -->|#45;| TP
+    GT -->|#45;| TP
+    RD -->|#45;| TP
+    TP -->|#45;| CB
 
-    EW -->|-| RCQ
-    RCQ -->|-| CAF
-    CAF -->|+| NEW
-    NEW -->|+| CB
-    CAF -->|+| OM
+    EW -->|#45;| RCQ
+    RCQ -->|#45;| CAF
+    CAF -->|#43;| NEW
+    NEW -->|#43;| CB
+    CAF -->|#43;| OM
 
-    OM -->|+| DRC
-    DRC -->|+| DCL
-    DCL -->|+| REP
-    REP -->|+| CB
+    OM -->|#43;| DRC
+    DRC -->|#43;| DCL
+    DCL -->|#43;| REP
+    REP -->|#43;| CB
 
-    DCL -->|-| CS
-    WC -->|-| CS
-    OM -->|+| WC
-    CS -->|+| TP
+    DCL -->|#45;| CS
+    WC -->|#45;| CS
+    OM -->|#43;| WC
+    CS -->|#43;| TP
 ```
 
 - **R1, Backlog Overload (reinforcing):** more backlog → engineers spread thinner → slower classify/gather/draft → lower throughput → more backlog.
@@ -387,7 +387,7 @@ The dataset averages **~13.5 lines/day**. Its ~353 CDS rows have gaps that are *
 ### 11.2 Lens 1 — Causal Loop Diagram
 
 ```mermaid
-graph LR
+graph TD
     VOL[Daily delivery volume]
     MERGE[Manual two-source merge effort]
     DQ[Data-quality gaps<br/>missing EORI / clustered CDS gaps]
@@ -404,33 +404,33 @@ graph LR
     ADOPT[AI agent adoption]
     AUTO[Automated continuous merge+validate]
 
-    MERGE -->|+| ERR
-    ERR -->|+| REWORK
-    REWORK -->|+| WORKLOAD
-    WORKLOAD -->|+| FATIGUE
-    FATIGUE -->|+| ERR
+    MERGE -->|#43;| ERR
+    ERR -->|#43;| REWORK
+    REWORK -->|#43;| WORKLOAD
+    WORKLOAD -->|#43;| FATIGUE
+    FATIGUE -->|#43;| ERR
 
-    ERR -->|+| REJECT
-    REJECT -->|+| CLRDELAY
-    CLRDELAY -->|+| WORKLOAD
-    WORKLOAD -->|-| TIMELY
-    TIMELY -->|-| REJECT
+    ERR -->|#43;| REJECT
+    REJECT -->|#43;| CLRDELAY
+    CLRDELAY -->|#43;| WORKLOAD
+    WORKLOAD -->|#45;| TIMELY
+    TIMELY -->|#45;| REJECT
 
-    VOL -->|+| MERGE
-    DQ -->|+| CRIT
-    DQ -->|+| ERR
-    CRIT -->|+| REWORK
-    REWORK -->|-| REJECT
+    VOL -->|#43;| MERGE
+    DQ -->|#43;| CRIT
+    DQ -->|#43;| ERR
+    CRIT -->|#43;| REWORK
+    REWORK -->|#45;| REJECT
 
-    CLRDELAY -->|+| TRANSPORT
-    TRANSPORT -->|+| DEMUR
+    CLRDELAY -->|#43;| TRANSPORT
+    TRANSPORT -->|#43;| DEMUR
 
-    WORKLOAD -->|+| ADOPT
-    ADOPT -->|+| AUTO
-    AUTO -->|-| MERGE
-    AUTO -->|-| ERR
-    AUTO -->|+| TIMELY
-    TIMELY -->|+| ADOPT
+    WORKLOAD -->|#43;| ADOPT
+    ADOPT -->|#43;| AUTO
+    AUTO -->|#45;| MERGE
+    AUTO -->|#45;| ERR
+    AUTO -->|#43;| TIMELY
+    TIMELY -->|#43;| ADOPT
 ```
 
 - **R1, the Merge-Error / Fatigue Death Spiral (reinforcing):** manual merge → errors → rework → workload → fatigue → *more* errors. The clustered CDS gaps feed it constantly, because the operator can't tell a "legitimately absent row" from "I missed the join" without manual cross-checking.

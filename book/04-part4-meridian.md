@@ -68,7 +68,7 @@ A second shock lands in **April 2025**: a rare-earth / neodymium-magnet price sp
 A monthly table tells you *what* changed. It doesn't tell you *why the change fed on itself.* Meridian's crisis was not a one-time hit that the system absorbed. It was a **vicious circle** that a tariff shock set in motion and that then ran under its own power.
 
 ```mermaid
-graph LR
+graph TD
   TAR[Sep-2024 tariff shock]
   COST[Material cost pressure]
   CASH[Meridian cash-flow stress]
@@ -80,18 +80,18 @@ graph LR
   MARGIN[Throughput margin]
   CLAR[Clarification rounds / admin burden]
 
-  TAR -->|+| COST
-  COST -->|+| CASH
-  CASH -->|+| LATE
-  LATE -->|-| HEALTH
-  HEALTH -->|+| RESP
-  RESP -->|+| POOL
-  POOL -->|-| PRICE
-  PRICE -->|+| COST
-  POOL -->|+| MARGIN
-  MARGIN -->|-| CASH
-  HEALTH -->|-| CLAR
-  CLAR -->|-| RESP
+  TAR -->|#43;| COST
+  COST -->|#43;| CASH
+  CASH -->|#43;| LATE
+  LATE -->|#45;| HEALTH
+  HEALTH -->|#43;| RESP
+  RESP -->|#43;| POOL
+  POOL -->|#45;| PRICE
+  PRICE -->|#43;| COST
+  POOL -->|#43;| MARGIN
+  MARGIN -->|#45;| CASH
+  HEALTH -->|#45;| CLAR
+  CLAR -->|#45;| RESP
 ```
 
 - **R1, the margin death spiral (the dominant loop).** `CASH → + LATE → − HEALTH → + RESP → + POOL → + MARGIN → − CASH`. Two minus signs, so it is **reinforcing**. Cash stress makes Meridian pay late. Late payment erodes vendor health. Unhealthy vendors stop bidding. A thin pool loses price competition, margin falls, and falling margin *deepens* cash stress. This loop turned a one-month tariff into a ten-month decline. Data signature: bids/RFQ **6.40 → 4.50 (−30%)**, T-margin **20.0% → 16.4%**.
@@ -115,9 +115,9 @@ graph LR
 ### 15.3 Lens 2 — Stock & Flow
 
 ```mermaid
-flowchart LR
+flowchart TB
   subgraph FLOWS
-    direction LR
+    direction TB
     pay_late((pay late)) -->|fills| STRESS
     heal((relationship repair)) -->|fills| HQ
     decay((health decay)) -->|drains| HQ
